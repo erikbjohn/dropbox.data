@@ -2,3 +2,4 @@
 
 export(data.env)
 import(rdrop2)
+import(stringr)
