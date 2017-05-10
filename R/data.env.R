@@ -47,7 +47,7 @@ data.env <- function(pkgname, Sys_dropbox_dir = '~/Dropbox/') {
     # View which files are uploaded
     cat(paste('Directory', Sys_package_dir, 'details:'), sep='\n')
     drop.files.dirs <- list.dirs(path = Sys_package_dir, full.names = TRUE, recursive = TRUE)
-    drop.files.dirs <- lapply(drop.files.dirs, function(x) str_extract(x, regex('/pkg.data/.+.', perl=TRUE)))
+    drop.files.dirs <- sapply(drop.files.dirs, function(x) str_extract(x, regex('/pkg.data/.+.', perl=TRUE)))
     drop.files <- list()
     drop.files$all <-  rbindlist(lapply(drop.files.dirs, function(x) as.data.table(rdrop2::drop_dir(x))))
     if (nrow(drop.files)>0){
