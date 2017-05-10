@@ -7,6 +7,7 @@
 #' @export
 #' @import rdrop2
 #'     stringr
+#'     data.table
 data.env <- function(pkgname, Sys_dropbox_dir = '~/Dropbox/') {
     # Find dropbox directory
     cat('Mapping data to package', pkgname, 'dropbox location', '\n')
@@ -46,7 +47,7 @@ data.env <- function(pkgname, Sys_dropbox_dir = '~/Dropbox/') {
     # View which files are uploaded
     cat(paste('Directory', Sys_package_dir, 'details:'), sep='\n')
     drop.files <- list()
-    drop.files$all <-  rdrop2::drop_dir(R_dropbox_dir)
+    drop.files$all <-  as.data.table(rdrop2::drop_dir(R_dropbox_dir))
     drop.files$all$f.name <- str_extract(drop.files$all$path, regex('[^/]+$', perl=TRUE))
     drop.files$base <- drop.files$all[which(drop.files$all$path %in% R_dropbox_file),]
     drop.files$raw <- drop.files$all[which(!drop.files$all$path %in% R_dropbox_file),]

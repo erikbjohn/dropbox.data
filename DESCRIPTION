@@ -8,5 +8,5 @@ Description: For use in packages which build binary packages. Keep data remotely
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: rdrop2, stringr
+Imports: rdrop2, stringr, data.table
 RoxygenNote: 6.0.1.9000
