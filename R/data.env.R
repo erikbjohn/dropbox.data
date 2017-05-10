@@ -53,7 +53,7 @@ data.env <- function(pkgname, Sys_dropbox_dir = '~/Dropbox/') {
     drop.files$all <- drop.files$all[!(is_dir=='TRUE')]
     if (nrow(drop.files$all)>0){
         drop.files$all$f.name <- str_extract(drop.files$all$path, regex('[^/]+$', perl=TRUE))
-        drop.files$all$sys_path_file <- paste0(Sys_dropbox_dir, 'pkg.data/', pkgname, '/', drop.files$all$f.name)
+        drop.files$all$sys_path_file <- paste0(Sys_dropbox_dir, gsub('/pkg.data', 'pkg.data', drop.files$all$path))
         drop.files$base <- drop.files$all[which(drop.files$all$path %in% R_dropbox_file),]
         drop.files$raw <- drop.files$all[which(!drop.files$all$path %in% R_dropbox_file),]
         drop.files$sys_path <- Sys_dropbox_dir
