@@ -68,4 +68,5 @@ data.env <- function(pkgname, Sys_dropbox_dir = '~/Dropbox/') {
     } else {
         cat(paste0(R_dropbox_file, ' does not exist, please run ', pkgname, '() to create'), sep='\n')
     }
+    return(drop.files)
 }
