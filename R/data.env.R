@@ -46,33 +46,38 @@ data.env <- function(pkgname, Sys_dropbox_dir = '~/Dropbox/') {
     }
     # View which files are uploaded
     cat(paste('Directory', Sys_package_dir, 'details:'), sep='\n')
-    drop.files <- list()
-    drop.files$all <-  as.data.table(rdrop2::drop_dir(R_dropbox_dir))
-    drop.files$all$f.name <- str_extract(drop.files$all$path, regex('[^/]+$', perl=TRUE))
-    drop.files$all$sys_path_file <- paste0(Sys_dropbox_dir, 'pkg.data/', pkgname, '/', drop.files$all$f.name)
-    drop.files$base <- drop.files$all[which(drop.files$all$path %in% R_dropbox_file),]
-    drop.files$raw <- drop.files$all[which(!drop.files$all$path %in% R_dropbox_file),]
-    drop.files$sys_path <- Sys_dropbox_dir
+    drop.files.dirs <- list.dirs(path = Sys_package_dir, full.names = TRUE, recursive = TRUE)
+    drop.files.dirs <- lapply(drop.files.dirs, function(x) str_extract(x, regex('/pkg.data/.+.', perl=TRUE)))
+    drop.files$all <-  rbindlist(lapply(drop.files.dirs, function(x) as.data.table(rdrop2::drop_dir(x))))
+    if (nrow(drop.files)>0){
+        drop.files$all$f.name <- str_extract(drop.files$all$path, regex('[^/]+$', perl=TRUE))
+        drop.files$all$sys_path_file <- paste0(Sys_dropbox_dir, 'pkg.data/', pkgname, '/', drop.files$all$f.name)
+        drop.files$base <- drop.files$all[which(drop.files$all$path %in% R_dropbox_file),]
+        drop.files$raw <- drop.files$all[which(!drop.files$all$path %in% R_dropbox_file),]
+        drop.files$sys_path <- Sys_dropbox_dir
 
-    # Check for the base data such as (corelogic.rdata)
-    if (nrow(drop.files$all)==0){
-        cat('---------------------------------------------------------',
-            paste0('Error in load ', pkgname,'.rdata : No raw or final data available.'),
-            paste('----------------------------------------------------------'),
-            paste('Too fix this issue try the following:'),
-            paste('1) Make sure the dropbox directory ', R_dropbox_dir, 'is synced on the local computer'),
-            paste('2) If you do not have adequate sharing permissions through dropbox, contact erikbjohn@gmail.com for dropbox sharing.'),
-            paste('   Subject line should read: ', R_dropbox_dir, 'package data sharing for user email:',  rdrop2::drop_acc()[[15]]), sep='\n')
-    }
-    if (nrow(drop.files$base)>0){
-        cat('\n', paste(R_dropbox_file, 'exists.'),
-            paste0('Loading ', R_dropbox_file, 'to Global envirornment'),
-            paste('Last modified:', drop.files$base$modified),
-            paste0('To create new ', pkgname, '.rdata, call the function: ', pkgname,'::', pkgname, '(new=TRUE)'),
-            sep='\n')
-        load(Sys_package_file, envir = .GlobalEnv)
+        # Check for the base data such as (corelogic.rdata)
+        if (nrow(drop.files$all)==0){
+            cat('---------------------------------------------------------',
+                paste0('Error in load ', pkgname,'.rdata : No raw or final data available.'),
+                paste('----------------------------------------------------------'),
+                paste('Too fix this issue try the following:'),
+                paste('1) Make sure the dropbox directory ', R_dropbox_dir, 'is synced on the local computer'),
+                paste('2) If you do not have adequate sharing permissions through dropbox, contact erikbjohn@gmail.com for dropbox sharing.'),
+                paste('   Subject line should read: ', R_dropbox_dir, 'package data sharing for user email:',  rdrop2::drop_acc()[[15]]), sep='\n')
+        }
+        if (nrow(drop.files$base)>0){
+            cat('\n', paste(R_dropbox_file, 'exists.'),
+                paste0('Loading ', R_dropbox_file, 'to Global envirornment'),
+                paste('Last modified:', drop.files$base$modified),
+                paste0('To create new ', pkgname, '.rdata, call the function: ', pkgname,'::', pkgname, '(new=TRUE)'),
+                sep='\n')
+            load(Sys_package_file, envir = .GlobalEnv)
+        } else {
+            cat(paste0(R_dropbox_file, ' does not exist, please run ', pkgname, '() to create'), sep='\n')
+        }
     } else {
-        cat(paste0(R_dropbox_file, ' does not exist, please run ', pkgname, '() to create'), sep='\n')
+        cat(Sys_package_dir, 'is empty.')
     }
     return(drop.files)
 }
