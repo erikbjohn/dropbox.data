@@ -1,0 +1,12 @@
+Package: dropbox.data
+Type: Package
+Title: Load package data into global.env
+Version: 0.1.0
+Author: Erik Johnson
+Maintainer: Erik Johnson <erikbjohn@gmail.com>
+Description: For use in packages which build binary packages. Keep data remotely in Dropbox for easy access.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: rdrop2
+RoxygenNote: 6.0.1.9000
