@@ -50,7 +50,7 @@ data.env <- function(pkgname, Sys_dropbox_dir = '~/Dropbox/') {
     drop.files.dirs <- sapply(drop.files.dirs, function(x) str_extract(x, regex('/pkg.data/.+.', perl=TRUE)))
     drop.files <- list()
     drop.files$all <-  rbindlist(lapply(drop.files.dirs, function(x) as.data.table(rdrop2::drop_dir(x))))
-    drop.files$all <- drop.files$all[!(is_dir=='TRUE')]
+    #drop.files$all <- drop.files$all[!(is_dir=='TRUE')]
     if (nrow(drop.files$all)>0){
         drop.files$all$f.name <- str_extract(drop.files$all$path, regex('[^/]+$', perl=TRUE))
         drop.files$all$sys_path_file <- paste0(Sys_dropbox_dir, gsub('/pkg.data', 'pkg.data', drop.files$all$path))
