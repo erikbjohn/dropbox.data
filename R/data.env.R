@@ -50,6 +50,7 @@ data.env <- function(pkgname, Sys_dropbox_dir = '~/Dropbox/') {
     drop.files$all$f.name <- str_extract(drop.files$all$path, regex('[^/]+$', perl=TRUE))
     drop.files$base <- drop.files$all[which(drop.files$all$path %in% R_dropbox_file),]
     drop.files$raw <- drop.files$all[which(!drop.files$all$path %in% R_dropbox_file),]
+    drop.files$system.dropbox.path <- Sys_dropbox_dir
 
     # Check for the base data such as (corelogic.rdata)
     if (nrow(drop.files$all)==0){
