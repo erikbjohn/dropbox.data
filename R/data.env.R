@@ -48,11 +48,14 @@ data.env <- function(pkgname, Sys_dropbox_dir = '~/Dropbox/') {
     cat(paste('Directory', Sys_package_dir, 'details:'), sep='\n')
     drop.files.dirs <- list.dirs(path = Sys_package_dir, full.names = TRUE, recursive = TRUE)
     drop.files.dirs <- sapply(drop.files.dirs, function(x) str_extract(x, regex('/pkg.data/.+.', perl=TRUE)))
-    drop.files <- list()
-    drop.files$all <-  rbindlist(lapply(drop.files.dirs, function(x) as.data.table(rdrop2::drop_dir(x))))
-    #drop.files$all <- drop.files$all[!(is_dir=='TRUE')]
+    # Convert all dirs to lower case and replace spaces with_(weird issue)
+    drop.files$all <-  rbindlist(lapply(drop.files.dirs, function(x) data.table(as.data.table(rdrop2::drop_dir(x)), orig.dir=x)))
     if (nrow(drop.files$all)>0){
         drop.files$all$f.name <- str_extract(drop.files$all$path, regex('[^/]+$', perl=TRUE))
+        # Double check validity because of capitalization bug in rdrop2
+        #drop.files$all$new.dir <- str_replace_all(drop.files$all$path, paste0('/',drop.files$all$f.name), '')
+        #drop.files$all$bad.dir <- drop.files$all$new.dir != drop.files$all$orig.dir
+        # If there is an issue,
         drop.files$all$sys_path_file <- paste0(Sys_dropbox_dir, gsub('/pkg.data', 'pkg.data', drop.files$all$path))
         drop.files$base <- drop.files$all[which(drop.files$all$path %in% R_dropbox_file),]
         drop.files$raw <- drop.files$all[which(!drop.files$all$path %in% R_dropbox_file),]
