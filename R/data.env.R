@@ -10,6 +10,7 @@
 #'     data.table
 data.env <- function(pkgname, Sys_dropbox_dir = '~/Dropbox/') {
     # Find dropbox directory
+    rdrop2::drop_auth()
     cat('Mapping data to package', pkgname, 'dropbox location', '\n')
     drop_user <- rdrop2::drop_acc()[[2]]
     cat(paste('\nUser', drop_user, 'authenticated in dropbox'), sep='\n')
@@ -40,8 +41,14 @@ data.env <- function(pkgname, Sys_dropbox_dir = '~/Dropbox/') {
     R_dropbox_file <- paste0(R_dropbox_dir, '/', pkgname, '.rdata')
     Sys_package_dir <- paste0(Sys_dropbox_dir, 'pkg.data/', pkgname)
     Sys_package_file <- paste0(Sys_package_dir, '/', pkgname, '.rdata')
+    Sys_pkgdata_dir <- paste0(Sys_dropbox_dir,'pkg.data/')
+
+    if (!dir.exists(Sys_pkgdata_dir)){
+        cat(paste('Creating pkg.data repository', Sys_pkgdata_dir), sep='\n')
+        dir.create(paste0(Sys_pkgdata_dir,'/'))
+    }
     if (!dir.exists(Sys_package_dir)){
-        cat(paste('Creating dropbox repository',  Sys_package_dir), sep='\n')
+        cat(paste('Linking package repository',  Sys_package_dir), sep='\n')
         dir.create(Sys_package_dir)
     }
     # View which files are uploaded
