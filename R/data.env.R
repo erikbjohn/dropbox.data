@@ -8,7 +8,9 @@
 #' @import rdrop2
 #'     stringr
 #'     data.table
-data.env <- function(pkgname, Sys_dropbox_dir = '~/Dropbox/') {
+data.env <- function(pkgname, Sys_dropbox_dir = c('~/Dropbox/', '~/../Dropbox/')) {
+    Sys_dropbox_dir <- Sys_dropbox_dir[which(unlist(lapply(dir.exists, Sys_dropbox_dir)))]
+    list.dirs(path = "/", full.names = TRUE, recursive = TRUE)
     # Find dropbox directory
     rdrop2::drop_auth()
     cat('Mapping data to package', pkgname, 'dropbox location', '\n')
